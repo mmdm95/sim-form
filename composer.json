@@ -1,0 +1,20 @@
+{
+    "name": "mmdm/sim-form",
+    "description": "A simple yet nice form library",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "MMDM",
+            "email": "mmdehghan95@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Sim\\Form\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.2"
+    }
+}
