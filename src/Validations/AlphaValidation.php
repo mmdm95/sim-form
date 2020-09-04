@@ -20,6 +20,6 @@ class AlphaValidation extends AbstractValidation
         }
 
         [$value] = $_;
-        return preg_match('/^([a-z])+$/i', (string)$value);
+        return (bool)preg_match('/^([a-z])+$/i', (string)$value);
     }
 }
