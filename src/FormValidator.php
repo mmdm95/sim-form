@@ -316,6 +316,20 @@ class FormValidator extends AbstractFormValidator
      * {@inheritdoc}
      * @throws FormException
      */
+    public function hexColor(?string $message = null, callable $callback = null)
+    {
+        $this->assertRequirements();
+        $name = $this->fields;
+        $this->_execute($name, $message, __FUNCTION__, function ($value) {
+            return $this->_hex_color($value);
+        }, $callback);
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws FormException
+     */
     public function isIn(array $list, ?string $message = null, ?callable $callback = null, bool $strict = false)
     {
         $this->assertRequirements();

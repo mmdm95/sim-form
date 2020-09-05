@@ -144,6 +144,16 @@ interface IFormValidator extends IFormError
     public function greaterThan($min, ?string $message = null, callable $callback = null);
 
     /**
+     * Validate a hex color to be in [0-f0-9] 3 or 6 characters
+     * with or without hash tag sign (#)
+     *
+     * @param string|null $message
+     * @param callable|null $callback
+     * @return static
+     */
+    public function hexColor(?string $message = null, callable $callback = null);
+
+    /**
      * Check if a field value is in a list or not in strict or non strict mode comparison
      *
      * @param array $list

@@ -16,6 +16,7 @@ use Sim\Form\Validations\GreaterThanEqualLengthValidation;
 use Sim\Form\Validations\GreaterThanEqualValidation;
 use Sim\Form\Validations\GreaterThanLengthValidation;
 use Sim\Form\Validations\GreaterThanValidation;
+use Sim\Form\Validations\HexColorValidation;
 use Sim\Form\Validations\InArrayValidation;
 use Sim\Form\Validations\IntegerValidation;
 use Sim\Form\Validations\IPV4Validation;
@@ -89,6 +90,7 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
         'greaterThanEqual' => GreaterThanEqualValidation::class,
         'greaterThanLength' => GreaterThanLengthValidation::class,
         'greaterThan' => GreaterThanValidation::class,
+        'hexColor' => HexColorValidation::class,
         'isIn' => InArrayValidation::class,
         'isInteger' => IntegerValidation::class,
         'ipv4' => IPV4Validation::class,
@@ -422,6 +424,21 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
          */
         $instance = $this->getInstanceOf('greaterThan');
         return $instance->validate($value, $min);
+    }
+
+    /**
+     * @param $value
+     * @return bool
+     * @throws ValidationException
+     * @throws \ReflectionException
+     */
+    protected function _hex_color($value): bool
+    {
+        /**
+         * @var HexColorValidation $instance
+         */
+        $instance = $this->getInstanceOf('hexColor');
+        return $instance->validate($value);
     }
 
     /**
