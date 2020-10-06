@@ -3,8 +3,7 @@
 namespace Sim\Form\Abstracts;
 
 use Sim\Form\ExpandableElement;
-use Sim\Form\FormElement\Span;
-use Sim\Form\FormElement\Wrapper;
+use Sim\Form\FormElements\Wrapper;
 use Sim\Form\Interfaces\IFormElement;
 
 abstract class AbstractFormElement implements IFormElement

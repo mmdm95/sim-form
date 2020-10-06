@@ -1,10 +1,9 @@
 <?php
 
-namespace Sim\Form\FormValidator;
+namespace Sim\Form;
 
 use Sim\Form\Abstracts\AbstractFormValidator;
 use Sim\Form\Exceptions\FormException;
-use Sim\Form\FormValue;
 use Sim\Form\Utils\ValidatorUtil;
 use Sim\Form\Validations\PasswordValidation;
 

@@ -3,7 +3,6 @@
 namespace Sim\Form\Interfaces;
 
 use Sim\Form\Abstracts\AbstractFieldComposite;
-use Sim\Form\ExpandableElement;
 
 interface IFormElement extends IRenderer
 {

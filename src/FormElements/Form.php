@@ -1,12 +1,12 @@
 <?php
 
-namespace Sim\Form\FormElement;
+namespace Sim\Form\FormElements;
 
 use Closure;
 use Sim\Form\Abstracts\AbstractFieldComposite;
 use Sim\Form\Exceptions\FormException;
 use Sim\Form\FormErrorProvider;
-use Sim\Form\FormValidator\FormValidator;
+use Sim\Form\FormValidator;
 use Sim\Form\Interfaces\IFormElement;
 use Sim\Form\Interfaces\IFormError;
 use Sim\Form\Utils\ValidatorUtil;
@@ -53,9 +53,9 @@ class Form extends AbstractFieldComposite
 
     /**
      * @param string $url
-     * @return Form
+     * @return static
      */
-    public function setAction(string $url): Form
+    public function setAction(string $url)
     {
         if (!is_null($url)) {
             $this->attributes['action'] = $url;
@@ -73,9 +73,9 @@ class Form extends AbstractFieldComposite
 
     /**
      * @param string $method
-     * @return Form
+     * @return static
      */
-    public function setMethod(string $method): Form
+    public function setMethod(string $method)
     {
         if (!is_null($method)) {
             $this->attributes['method'] = $method;
@@ -95,9 +95,9 @@ class Form extends AbstractFieldComposite
 
     /**
      * @param bool $answer
-     * @return Form
+     * @return static
      */
-    public function haveIndividualErrors(bool $answer): Form
+    public function haveIndividualErrors(bool $answer)
     {
         $this->has_individual_errors = $answer;
         return $this;

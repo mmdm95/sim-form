@@ -1,11 +1,11 @@
 <?php
 
-use Sim\Form\FormElement\Button;
-use Sim\Form\FormElement\Form;
-use Sim\Form\FormElement\Input;
-use Sim\Form\FormElement\SimpleText;
-use Sim\Form\FormElement\Wrapper;
-use Sim\Form\FormValidator\FormValidator;
+use Sim\Form\FormElements\Button;
+use Sim\Form\FormElements\Form;
+use Sim\Form\FormElements\Input;
+use Sim\Form\FormElements\SimpleText;
+use Sim\Form\FormElements\Wrapper;
+use Sim\Form\FormValidator;
 use Sim\Form\FormValue;
 use Sim\Form\Interfaces\IFormError;
 

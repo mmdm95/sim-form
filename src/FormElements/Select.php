@@ -1,6 +1,6 @@
 <?php
 
-namespace Sim\Form\FormElement;
+namespace Sim\Form\FormElements;
 
 use Sim\Form\Abstracts\AbstractFieldComposite;
 
@@ -25,7 +25,7 @@ class Select extends AbstractFieldComposite
     /**
      * {@inheritdoc}
      */
-    public function setValue(): Select
+    public function setValue(?string $value = '')
     {
         if (!empty($this->getName())) {
             $values = $_POST[$this->getName()] ?? null;
@@ -60,9 +60,9 @@ class Select extends AbstractFieldComposite
 
     /**
      * @param string $value
-     * @return Select
+     * @return static
      */
-    public function addOption(string $value): Select
+    public function addOption(string $value)
     {
         $this->createOption($value);
         return $this;
@@ -70,9 +70,9 @@ class Select extends AbstractFieldComposite
 
     /**
      * @param array $values
-     * @return Select
+     * @return static
      */
-    public function addOptions(array $values): Select
+    public function addOptions(array $values)
     {
         $this->createOptions($values);
         return $this;

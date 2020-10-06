@@ -1,6 +1,6 @@
 <?php
 
-use Sim\Form\FormValidator\FormValidator;
+use Sim\Form\FormValidator;
 
 include_once '../../vendor/autoload.php';
 

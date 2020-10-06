@@ -2,7 +2,7 @@
 
 namespace Sim\Form\ValidationExtend;
 
-use Sim\Form\FormValidator\FormValidator;
+use Sim\Form\FormValidator;
 
 abstract class AbstractCustomValidation extends FormValidator
 {

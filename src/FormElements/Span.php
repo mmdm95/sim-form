@@ -1,6 +1,6 @@
 <?php
 
-namespace Sim\Form\FormElement;
+namespace Sim\Form\FormElements;
 
 use Sim\Form\Abstracts\AbstractFieldComposite;
 
