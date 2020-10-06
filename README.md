@@ -8,7 +8,7 @@ It is version alpha and need a lot of tests!
 ## Install
 **composer**
 ```php 
-composer require mmdm/sim-benchmark
+composer require mmdm/sim-form
 ```
 
 Or you can simply download zip file from github and extract it, 
