@@ -50,6 +50,17 @@ class FormValidator extends AbstractFormValidator
      *   Can pass array of key, value pairs through first argument
      *   or a key as first argument and value as second one.
      *
+     * Note:
+     *   Instead of nested array, you can pass an array with dot
+     *   like:
+     *     k1.k2 => v1
+     *   which means:
+     *   [
+     *     k1 => [
+     *       k2 => v1,
+     *     ]
+     *   ]
+     *
      * @param $key
      * @param $value
      * @return static
@@ -57,7 +68,13 @@ class FormValidator extends AbstractFormValidator
     public function setDefaultValue($key, $value = null)
     {
         if (is_array($key)) {
-            $this->all_fields_values = array_merge_recursive($this->all_fields_values, $key);
+            foreach ($key as $k => $v) {
+                if (is_string($k) && !is_null($v)) {
+                    if (!isset($this->all_fields_values[$k])) {
+                        $this->_set_field_value($this->all_fields_values, $k, $v);
+                    }
+                }
+            }
         } elseif (is_string($key) && !is_null($value)) {
             if (!isset($this->all_fields_values[$key])) {
                 $this->_set_field_value($this->all_fields_values, $key, $value);
