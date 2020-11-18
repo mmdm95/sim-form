@@ -168,6 +168,18 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
     }
 
     /**
+     * @param array $translations
+     * @return static
+     */
+    public function setLangSettings(array $translations)
+    {
+        if (!empty($translations)) {
+            $this->language_settings = $translations;
+        }
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function setFields($fields)
@@ -459,7 +471,7 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
         $instance = $this->getInstanceOf('isIn');
 
         // if is not array, convert to scalar value then
-        if(!is_array($value)) $value = $this->_to_scalar($value);
+        if (!is_array($value)) $value = $this->_to_scalar($value);
         return $instance->validate($value, $list, $strict);
     }
 
@@ -692,7 +704,7 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
         $instance = $this->getInstanceOf('required');
 
         // if is not array, convert to scalar value then
-        if(!is_array($value)) $value = $this->_to_scalar($value);
+        if (!is_array($value)) $value = $this->_to_scalar($value);
         return $instance->validate($value);
     }
 
@@ -711,7 +723,7 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
         $instance = $this->getInstanceOf('requiredWithAll');
 
         // if is not array, convert to scalar value then
-        if(!is_array($value)) $value = $this->_to_scalar($value);
+        if (!is_array($value)) $value = $this->_to_scalar($value);
         return $instance->validate($value, ...$names);
     }
 
@@ -730,7 +742,7 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
         $instance = $this->getInstanceOf('requiredWith');
 
         // if is not array, convert to scalar value then
-        if(!is_array($value)) $value = $this->_to_scalar($value);
+        if (!is_array($value)) $value = $this->_to_scalar($value);
         return $instance->validate($value, ...$names);
     }
 
