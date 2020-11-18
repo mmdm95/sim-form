@@ -17,7 +17,7 @@ class UniqueArrayValidation extends AbstractValidation
      */
     public function validate(...$_): bool
     {
-        if (count($_) < 2 || !is_array($_[0])) {
+        if (count($_) < 1 || !is_array($_[0])) {
             return false;
         }
 

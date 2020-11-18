@@ -335,7 +335,9 @@ class FormValidator extends AbstractFormValidator
         $name = $this->fields;
         $this->_execute($name, $message, __FUNCTION__, function ($value) use ($list, $strict) {
             return $this->_is_in($value, $list, $strict);
-        }, $callback);
+        }, $callback, [
+            'list' => '[' . implode(',', $list) . ']',
+        ]);
         return $this;
     }
 

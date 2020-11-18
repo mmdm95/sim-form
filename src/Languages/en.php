@@ -26,7 +26,7 @@ return [
     'greaterThanLength' => '{alias} length is not greater than {min}',
     'greaterThan' => '{alias} is not greater than {min}',
     'hexColor' => '{alias} is not a valid hex color',
-    'isIn' => '{alias} is not in list',
+    'isIn' => '{alias} is not in {list}',
     'isInteger' => '{alias} is not integer',
     'ipv4' => '{alias} is not a valid ipv4',
     'ipv6' => '{alias} is not a valid ipv6',
