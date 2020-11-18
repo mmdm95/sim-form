@@ -991,6 +991,6 @@ class FormValidator extends AbstractFormValidator
             $this->_load_language_settings();
             $message = $this->language_settings[$method_name] ?? '';
         }
-        return $message;
+        return (string)$message;
     }
 }

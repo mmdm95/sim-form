@@ -162,7 +162,7 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
     public function setLang(string $lang)
     {
         if (!empty($lang)) {
-            $this->language_directory = $lang;
+            $this->language_type = $lang;
         }
         return $this;
     }
