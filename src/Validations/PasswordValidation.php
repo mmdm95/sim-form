@@ -21,7 +21,7 @@ class PasswordValidation extends AbstractValidation
      */
     public function validate(...$_): bool
     {
-        if(count($_) < 1 || !is_numeric($_[0])) {
+        if(count($_) < 1 || (isset($_[1]) && !is_numeric($_[1]))) {
             return false;
         }
 
