@@ -197,7 +197,7 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
     /**
      * {@inheritdoc}
      */
-    public function setFormName(string $formName)
+    public function setFormName(?string $formName)
     {
         if (is_null($this->form_name) || (is_string($formName) && !empty($formName))) {
             $this->form_name = $formName;

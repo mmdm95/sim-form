@@ -389,10 +389,10 @@ interface IFormValidator extends IFormError
     /**
      * Set a name for validating multi form and prevent conflict on get or set error for them
      *
-     * @param string $formName
+     * @param string|null $formName
      * @return static
      */
-    public function setFormName(string $formName);
+    public function setFormName(?string $formName);
 
     /**
      * @return string
