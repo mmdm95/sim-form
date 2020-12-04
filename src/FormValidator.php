@@ -44,6 +44,30 @@ class FormValidator extends AbstractFormValidator
     }
 
     /**
+     * @param array $on
+     * @return static
+     */
+    public function setAllValues(array $on)
+    {
+        if (!empty($on)) {
+            $this->all_fields_values = $on;
+        }
+        return $this;
+    }
+
+    /**
+     * @param array $on
+     * @return static
+     */
+    public function appendAllValues(array $on)
+    {
+        if (!empty($on)) {
+            $this->all_fields_values = array_merge_recursive($this->all_fields_values, $on);
+        }
+        return $this;
+    }
+
+    /**
      * Set default value of specific key, if it's not set
      *
      * Note:
@@ -800,7 +824,7 @@ class FormValidator extends AbstractFormValidator
      */
     protected function _execute($name, $message, $method_name, $callback, callable $userCallback = null, array $extra_placeholders = []): bool
     {
-        if($this->stop_execution_at_first_error) {
+        if ($this->stop_execution_at_first_error) {
             if (!$this->getStatus()) return true;
         }
 
@@ -808,7 +832,7 @@ class FormValidator extends AbstractFormValidator
         if (is_array($name)) {
             foreach ($name as $alias => $n) {
                 // get alias from alias collection
-                if(!is_string($alias)) {
+                if (!is_string($alias)) {
                     $alias = $this->fields_alias[$n] ?? $alias;
                 }
 
@@ -817,7 +841,7 @@ class FormValidator extends AbstractFormValidator
                     $res = false;
                 }
 
-                if($this->stop_execution_at_first_error_each_group && !$res) {
+                if ($this->stop_execution_at_first_error_each_group && !$res) {
                     break;
                 }
             }
