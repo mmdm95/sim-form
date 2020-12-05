@@ -46,13 +46,6 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
     protected $fields = [];
 
     /**
-     * Store all fields that are set during validation uniquely
-     *
-     * @var array $all_fields
-     */
-    protected $all_fields = [];
-
-    /**
      * @var string|null $form_name
      */
     protected $form_name = null;
@@ -190,7 +183,6 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
         } elseif (is_string($fields)) {
             $this->fields = [$fields];
         }
-        $this->all_fields = array_unique(array_merge($this->all_fields, $this->fields));
         return $this;
     }
 
@@ -246,7 +238,6 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
     public function reset(): void
     {
         $this->fields = [];
-        $this->all_fields = [];
         $this->form_name = null;
         $this->status = true;
         $this->errors = [];
