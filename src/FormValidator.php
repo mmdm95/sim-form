@@ -70,7 +70,7 @@ class FormValidator extends AbstractFormValidator
     public function appendAllValues(array $on)
     {
         if (!empty($on)) {
-            $this->all_fields_values = array_merge_recursive($this->all_fields_values, $on);
+            $this->all_fields_values = array_replace_recursive($this->all_fields_values, $on);
         }
         return $this;
     }
