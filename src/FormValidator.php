@@ -56,6 +56,14 @@ class FormValidator extends AbstractFormValidator
     }
 
     /**
+     * @return array
+     */
+    public function getAllValues(): array
+    {
+        return $this->all_fields_values;
+    }
+
+    /**
      * @param array $on
      * @return static
      */
