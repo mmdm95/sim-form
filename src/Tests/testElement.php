@@ -19,7 +19,6 @@ $first_name_inp = new Input('first_name', 'text');
 $first_name_inp->label()->add(new SimpleText('First name:'));
 $first_name_inp->setAttributes([
     'placeholder' => 'first name',
-    'required' => 'true',
 ]);
 
 // a simple wrapper
@@ -85,24 +84,29 @@ $form->add($wrapper)
 
 // add some validation rules to inputs
 $form->validateClosure(function (FormValidator $validator) use ($form_name) {
+    // set optional fields
+    $validator->setOptionalFields([
+        'first_name'
+    ]);
+
     $validator->setFormName($form_name)->setFields([
         'first_name', 'last_name'
     ])->alpha(null, function (FormValue $value) {
-        if($value->getName() == 'first_name') {
+        if ($value->getName() == 'first_name') {
 //            echo 'I am ' . $value->getName() . PHP_EOL;
             $value->replaceValue('MM');
         }
 //        var_dump($value->getValue(), $value->getName(), $value->getAlias());
 //        echo PHP_EOL;
     });
-     // because of setting
+    // because of setting
     $validator->setFieldsAlias([
         'first_name' => 'First name',
         'last_name' => 'Last name',
     ]);
 
 //    $validator->stopValidationAfterFirstErrorOnEachFieldGroup(true);
-    $validator->setFields(['name' => 'first_name' ,'last_name'])->greaterThanEqualLength(3);
+    $validator->setFields(['name' => 'first_name', 'last_name'])->greaterThanEqualLength(3);
     $validator->setFields(['first_name'])->regex('/[0-9]/');
 //    $validator->stopValidationAfterFirstError(true);
     $validator->setFields(['mobile' => 'mobile.*.user'])->custom(function (FormValue $value) {
@@ -116,7 +120,7 @@ $form_errors = null;
 
 if (isset($_POST['submit'])) {
 //    $form->haveIndividualErrors(true);
-    if($form->validate()) {
+    if ($form->validate()) {
         echo 'valid form';
     } else {
         /**

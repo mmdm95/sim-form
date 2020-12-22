@@ -20,6 +20,11 @@ class FormValidator extends AbstractFormValidator
     protected $fields_alias = [];
 
     /**
+     * @var array $optional_fields
+     */
+    protected $optional_fields = [];
+
+    /**
      * @var bool $stop_execution_at_first_error
      */
     protected $stop_execution_at_first_error = false;
@@ -149,6 +154,16 @@ class FormValidator extends AbstractFormValidator
     public function setFieldsAlias(array $alias)
     {
         $this->fields_alias = $alias;
+        return $this;
+    }
+
+    /**
+     * @param array $fields
+     * @return static
+     */
+    public function setOptionalFields(array $fields)
+    {
+        $this->optional_fields = $fields;
         return $this;
     }
 
@@ -885,7 +900,6 @@ class FormValidator extends AbstractFormValidator
             if (!is_array($values)) $values = [$values];
 
             foreach ($values as $value) {
-                $res = call_user_func_array($callback, [$value, $name, $alias]);
                 if (null != $userCallback && is_callable($userCallback)) {
                     $formValue = new FormValue($this->all_fields_values);
                     $formValue->setValue($value)
@@ -897,6 +911,13 @@ class FormValidator extends AbstractFormValidator
                     // set replaced fields to current fields
                     $this->all_fields_values = $formValue->getReplacedValues();
                 }
+
+                if (in_array($name, $this->optional_fields) && $this->_is_empty($value)) {
+                    $res = true;
+                    continue;
+                }
+
+                $res = call_user_func_array($callback, [$value, $name, $alias]);
                 $errorValue = $value;
                 if (!$res) break;
             }

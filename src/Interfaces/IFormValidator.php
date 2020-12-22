@@ -387,6 +387,14 @@ interface IFormValidator extends IFormError
     public function setFields($fields);
 
     /**
+     * Append fields name(s) to validate them
+     *
+     * @param $fields
+     * @return mixed
+     */
+    public function addToFields($fields);
+
+    /**
      * Set a name for validating multi form and prevent conflict on get or set error for them
      *
      * @param string|null $formName

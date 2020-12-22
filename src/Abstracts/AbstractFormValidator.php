@@ -178,10 +178,19 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
     public function setFields($fields)
     {
         $this->fields = [];
+        $this->addToFields($fields);
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addToFields($fields)
+    {
         if (is_array($fields)) {
-            $this->fields = $fields;
+            $this->fields = array_merge($this->fields, $fields);
         } elseif (is_string($fields)) {
-            $this->fields = [$fields];
+            $this->fields = array_merge($this->fields, [$fields]);
         }
         return $this;
     }
@@ -784,6 +793,20 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
          */
         $instance = $this->getInstanceOf('url');
         return $instance->validate($url);
+    }
+
+    /**
+     * @param $value
+     * @return bool
+     */
+    protected function _is_empty($value): bool
+    {
+        // if is not array, convert to scalar value then
+        if (!is_array($value)) $value = $this->_to_scalar($value);
+        if ((!is_array($value) && trim($value) === '') || (is_array($value) && 0 === count($value))) {
+            return true;
+        }
+        return false;
     }
 
     /**
