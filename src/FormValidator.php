@@ -831,7 +831,7 @@ class FormValidator extends AbstractFormValidator
             }
             return '';
         }
-        if (!empty($values) && !empty($value)) {
+        if ((!empty($values) && !empty($value)) || !empty($_POST)) {
             return $values == $value ? $return : '';
         }
         return (bool)$default ? $return : '';
