@@ -81,7 +81,7 @@ class FormValidator extends AbstractFormValidator
     }
 
     /**
-     * Set default value of specific key, if it's not set
+     * Set default value of specific key
      *
      * Note:
      *   Can pass array of key, value pairs through first argument
@@ -107,15 +107,11 @@ class FormValidator extends AbstractFormValidator
         if (is_array($key)) {
             foreach ($key as $k => $v) {
                 if (is_string($k) && !is_null($v)) {
-                    if (!isset($this->all_fields_values[$k])) {
-                        $this->_set_field_value($this->all_fields_values, $k, $v);
-                    }
+                    ValidatorUtil::setToArray($this->all_fields_values, $k, $v);
                 }
             }
         } elseif (is_string($key) && !is_null($value)) {
-            if (!isset($this->all_fields_values[$key])) {
-                $this->_set_field_value($this->all_fields_values, $key, $value);
-            }
+            ValidatorUtil::setToArray($this->all_fields_values, $key, $value);
         }
 
         return $this;
@@ -192,11 +188,11 @@ class FormValidator extends AbstractFormValidator
      */
     public function setInput(string $name, string $default = '')
     {
-        $values = $this->all_fields_values[$name] ?? null;
+        $values = $this->getFieldValue($name, null);
         if (is_null($values) || (is_array($values) && empty($values))) {
             return $default;
         }
-        return is_array($values) ? array_shift($this->all_fields_values[$name]) : $values;
+        return is_array($values) ? ValidatorUtil::getNRemoveFromArray($this->all_fields_values, $name) : $values;
     }
 
     /**
@@ -625,10 +621,14 @@ class FormValidator extends AbstractFormValidator
         $name = $this->fields;
         $this->_execute($name, $message, __FUNCTION__, function ($value) use ($names) {
             $namesValue = [];
-            foreach ($names as $name) {
-                if (is_string($name)) {
-                    $namesValue[] = $this->all_fields_values[$name] ?? null;
+            if (is_array($names)) {
+                foreach ($names as $name) {
+                    if (is_string($name)) {
+                        $namesValue[] = $this->getFieldValue($name, null);
+                    }
                 }
+            } elseif (is_string($names)) {
+                $namesValue[] = $this->getFieldValue($names, null);
             }
             return $this->_required_with_all($value, $namesValue);
         }, $callback);
@@ -645,10 +645,14 @@ class FormValidator extends AbstractFormValidator
         $name = $this->fields;
         $this->_execute($name, $message, __FUNCTION__, function ($value) use ($names) {
             $namesValue = [];
-            foreach ($names as $name) {
-                if (is_string($name)) {
-                    $namesValue[] = $this->all_fields_values[$name] ?? null;
+            if (is_array($names)) {
+                foreach ($names as $name) {
+                    if (is_string($name)) {
+                        $namesValue[] = $this->getFieldValue($name, null);
+                    }
                 }
+            } elseif (is_string($names)) {
+                $namesValue[] = $this->getFieldValue($names, null);
             }
             return $this->_required_with($value, $namesValue);
         }, $callback);
@@ -708,9 +712,9 @@ class FormValidator extends AbstractFormValidator
             $firstAlias = array_keys($fstName)[0];
             $fstName = array_shift($fstName);
             if (is_numeric($firstAlias)) $firstAlias = $fstName;
-            $first = isset($this->all_fields_values[$fstName]) ? $this->all_fields_values[$fstName] : null;
+            $first = $this->getFieldValue($fstName, null);
         } else {
-            $first = !is_null($fstName) && isset($this->all_fields_values[$fstName]) ? $this->all_fields_values[$fstName] : null;
+            $first = !is_null($fstName) ? $this->getFieldValue($fstName, null) : null;
             $firstAlias = $fstName;
         }
         //-----
@@ -724,7 +728,7 @@ class FormValidator extends AbstractFormValidator
                     : (is_string($theSndName) ? $theSndName : null);
 
                 $sndAlias = !is_numeric($alias) ? $alias : $snd;
-                $second = !is_null($snd) && isset($this->all_fields_values[$snd]) ? $this->all_fields_values[$snd] : null;
+                $second = !is_null($snd) ? $this->getFieldValue($snd, null) : null;
                 $result = false;
                 //-----
                 if (!is_null($theSndName)) {
@@ -819,10 +823,7 @@ class FormValidator extends AbstractFormValidator
      */
     protected function _set_input($name, $value, $default, $return): string
     {
-        $values = $this->all_fields_values[$name] ?? null;
-        if (is_null($values) && (bool)$default) {
-            return $default ? $return : '';
-        }
+        $values = $this->getFieldValue($name, null);
         $value = (string)$value;
         if (is_array($values)) {
             if (!empty($value) && in_array($value, $values)) {
@@ -830,8 +831,10 @@ class FormValidator extends AbstractFormValidator
             }
             return '';
         }
-        if (empty($values) || empty($value) || $values != $value) return '';
-        return $return;
+        if (!empty($values) && !empty($value)) {
+            return $values == $value ? $return : '';
+        }
+        return (bool)$default ? $return : '';
     }
 
     /**
@@ -946,26 +949,8 @@ class FormValidator extends AbstractFormValidator
     }
 
     /**
-     * @param $array
-     * @param $key
-     * @param $value
-     */
-    protected function _set_field_value(&$array, $key, $value)
-    {
-        $keys = explode('.', $key);
-        while (count($keys) > 1) {
-            $key = array_shift($keys);
-            if (!isset($array[$key]) || !is_array($array[$key])) {
-                $array[$key] = [];
-            }
-            $array = &$array[$key];
-        }
-        $array[array_shift($keys)] = $value;
-    }
-
-    /**
      * This code directly come from valitron validation library,
-     * but there a simpler version in our code and there is no
+     * but there is a simpler version in our code and there is no
      * need these codes anymore if every thing is OK!
      *
      * @see https://github.com/vlucas/valitron/blob/9268adeeb48ba155e35dca861f5990283e14eafb/src/Valitron/Validator.php#L1127

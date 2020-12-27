@@ -302,7 +302,7 @@ interface IFormValidator extends IFormError
      * Validate specific name to be required
      * if all of $names parameter are present.
      *
-     * @param $names
+     * @param array|string $names
      * @param string|null $message
      * @param callable|null $callback
      * @return static

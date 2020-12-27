@@ -59,4 +59,46 @@ class ValidatorUtil
             return self::getParameters($data[$first], $names);
         }
     }
+
+    /**
+     * @param $array
+     * @param $key
+     * @param $value
+     */
+    public static function setToArray(&$array, $key, $value)
+    {
+        $keys = explode('.', $key);
+        while (count($keys) > 1) {
+            $key = array_shift($keys);
+            if (!isset($array[$key]) || !is_array($array[$key])) {
+                $array[$key] = [];
+            }
+            $array = &$array[$key];
+        }
+        $array[array_shift($keys)] = $value;
+    }
+
+    /**
+     * @param $array
+     * @param $key
+     * @param null $default
+     * @return mixed|null
+     */
+    public static function getNRemoveFromArray(&$array, $key, $default = null)
+    {
+        $keys = explode('.', $key);
+        while (count($keys) > 1) {
+            $key = array_shift($keys);
+            if (!isset($array[$key])) {
+                return $default;
+            }
+            $array = &$array[$key];
+        }
+        $last = array_shift($keys);
+        $res = $array[$last] ?? $default;
+        if (isset($array[$last])) {
+            unset($array[$last]);
+        }
+        return $res;
+    }
 }
