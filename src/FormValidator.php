@@ -81,7 +81,7 @@ class FormValidator extends AbstractFormValidator
     }
 
     /**
-     * Set default value of specific key
+     * Set default value of specific key, if it's not set
      *
      * Note:
      *   Can pass array of key, value pairs through first argument
@@ -107,11 +107,15 @@ class FormValidator extends AbstractFormValidator
         if (is_array($key)) {
             foreach ($key as $k => $v) {
                 if (is_string($k) && !is_null($v)) {
-                    ValidatorUtil::setToArray($this->all_fields_values, $k, $v);
+                    if (!ValidatorUtil::hasInArray($this->all_fields_values, $k, false)) {
+                        ValidatorUtil::setToArray($this->all_fields_values, $k, $v);
+                    }
                 }
             }
         } elseif (is_string($key) && !is_null($value)) {
-            ValidatorUtil::setToArray($this->all_fields_values, $key, $value);
+            if (!ValidatorUtil::hasInArray($this->all_fields_values, $key, false)) {
+                ValidatorUtil::setToArray($this->all_fields_values, $key, $value);
+            }
         }
 
         return $this;

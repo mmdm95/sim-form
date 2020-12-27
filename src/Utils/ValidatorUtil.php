@@ -101,4 +101,29 @@ class ValidatorUtil
         }
         return $res;
     }
+
+    /**
+     * @param $array
+     * @param $key
+     * @param bool $is_null_ok
+     * @return bool
+     */
+    public static function hasInArray(&$array, $key, $is_null_ok = true): bool
+    {
+        $keys = explode('.', $key);
+        while (count($keys) > 1) {
+            $key = array_shift($keys);
+            if (!isset($array[$key])) {
+                return false;
+            }
+            $array = &$array[$key];
+        }
+        $result = true;
+        $last = array_shift($keys);
+        if (!isset($array[$last])) $result = false;
+        if ((bool)$is_null_ok && array_key_exists($last, $array) && is_null($array[$last])) {
+            $result = true;
+        }
+        return $result;
+    }
 }
