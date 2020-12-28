@@ -29,6 +29,11 @@ if ($_POST && count($_POST)) {
     $form_validator
         ->setFields('family')
         ->alpha();
+
+    // to reset form values and not set them again
+    if ($form_validator->getStatus()) {
+        $form_validator->resetBagValues();
+    }
 }
 
 ?>

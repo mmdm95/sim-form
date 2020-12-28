@@ -423,6 +423,8 @@ interface IFormValidator extends IFormError
 
     /**
      * Reset form variables without store previous status
+     *
+     * @return static
      */
-    public function reset(): void;
+    public function reset();
 }

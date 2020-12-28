@@ -1,0 +1,1 @@
+# Extend validation class

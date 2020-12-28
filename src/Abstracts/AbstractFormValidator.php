@@ -244,12 +244,13 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
     /**
      * {@inheritdoc}
      */
-    public function reset(): void
+    public function reset()
     {
         $this->fields = [];
         $this->form_name = null;
         $this->status = true;
         $this->errors = [];
+        return $this;
     }
 
     /**

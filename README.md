@@ -22,5 +22,10 @@ require_once 'path_to_library/autoloader.php';
 
 and you are good to go.
 
+## Documentations
+
+For more info about this library and see how it works, please see 
+all documentation inside [`Wiki`](../blob/master/Wiki/contents.md) folder.
+
 # License
 Under MIT license.

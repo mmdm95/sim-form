@@ -15,6 +15,11 @@ class FormValidator extends AbstractFormValidator
     protected $all_fields_values = [];
 
     /**
+     * @var array $fields_values_bag
+     */
+    protected $fields_values_bag = [];
+
+    /**
      * @var array $fields_alias
      */
     protected $fields_alias = [];
@@ -46,6 +51,7 @@ class FormValidator extends AbstractFormValidator
             $on = $_POST + $_FILES;
         }
         $this->all_fields_values = $on;
+        $this->fields_values_bag = $on;
     }
 
     /**
@@ -56,6 +62,7 @@ class FormValidator extends AbstractFormValidator
     {
         if (!empty($on)) {
             $this->all_fields_values = $on;
+            $this->fields_values_bag = $on;
         }
         return $this;
     }
@@ -77,6 +84,23 @@ class FormValidator extends AbstractFormValidator
         if (!empty($on)) {
             $this->all_fields_values = array_replace_recursive($this->all_fields_values, $on);
         }
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBagValues(): array
+    {
+        return $this->fields_values_bag;
+    }
+
+    /**
+     * @return static
+     */
+    public function resetBagValues()
+    {
+        $this->fields_values_bag = [];
         return $this;
     }
 
@@ -128,16 +152,17 @@ class FormValidator extends AbstractFormValidator
      *
      * @param $key
      * @param mixed|null $prefer
+     * @param bool $from_bag
      * @param bool $normalize
      * @return array|string|null
      */
-    public function getFieldValue($key, $prefer = null, bool $normalize = true)
+    public function getFieldValue($key, $prefer = null, bool $from_bag = false, bool $normalize = true)
     {
         if ($normalize) {
             $key = ValidatorUtil::normalizeFieldKey($key);
         }
 
-        return $this->_get_filed_value($key)[0] ?? $prefer;
+        return $this->_get_filed_value($key, $from_bag)[0] ?? $prefer;
     }
 
     /**
@@ -192,11 +217,11 @@ class FormValidator extends AbstractFormValidator
      */
     public function setInput(string $name, string $default = '')
     {
-        $values = $this->getFieldValue($name, null);
+        $values = $this->getFieldValue($name, null, true);
         if (is_null($values) || (is_array($values) && empty($values))) {
             return $default;
         }
-        return is_array($values) ? ValidatorUtil::getNRemoveFromArray($this->all_fields_values, $name) : $values;
+        return is_array($values) ? ValidatorUtil::getNRemoveFromArray($this->fields_values_bag, $name) : $values;
     }
 
     /**
@@ -827,7 +852,7 @@ class FormValidator extends AbstractFormValidator
      */
     protected function _set_input($name, $value, $default, $return): string
     {
-        $values = $this->getFieldValue($name, null);
+        $values = $this->getFieldValue($name, null, true);
         $value = (string)$value;
         if (is_array($values)) {
             if (!empty($value) && in_array($value, $values)) {
@@ -963,7 +988,7 @@ class FormValidator extends AbstractFormValidator
      * @param bool $allow_empty
      * @return array
      */
-    protected function getPart($data, $identifiers, $allow_empty = false)
+    private function getPart($data, $identifiers, $allow_empty = false)
     {
         // Catches the case where the field is an array of discrete values
         if (is_array($identifiers) && count($identifiers) === 0) {
@@ -1011,12 +1036,14 @@ class FormValidator extends AbstractFormValidator
      * detection: post or file field
      *
      * @param $name
+     * @param bool $from_bag
      * @return array|string|null
      */
-    private function _get_filed_value($name)
+    private function _get_filed_value($name, bool $from_bag = false)
     {
         if (is_string($name)) {
-            return ValidatorUtil::getParameters($this->all_fields_values, explode('.', $name));
+            $arr = $from_bag ? $this->fields_values_bag : $this->all_fields_values;
+            return ValidatorUtil::getParameters($arr, explode('.', $name));
         }
         return null;
     }
