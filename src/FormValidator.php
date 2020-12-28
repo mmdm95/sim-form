@@ -150,19 +150,31 @@ class FormValidator extends AbstractFormValidator
      *
      * If the value is null, returns $prefer instead
      *
-     * @param $key
+     * @param string $key
      * @param mixed|null $prefer
      * @param bool $from_bag
      * @param bool $normalize
      * @return array|string|null
      */
-    public function getFieldValue($key, $prefer = null, bool $from_bag = false, bool $normalize = true)
+    public function getFieldValue(string $key, $prefer = null, bool $from_bag = false, bool $normalize = true)
     {
         if ($normalize) {
             $key = ValidatorUtil::normalizeFieldKey($key);
         }
 
         return $this->_get_filed_value($key, $from_bag)[0] ?? $prefer;
+    }
+
+    /**
+     * Check if value of a specific key is empty or not
+     *
+     * @param string $key
+     * @return bool
+     */
+    public function isFieldValueEmpty(string $key): bool
+    {
+        $value = $this->getFieldValue($key);
+        return $this->_is_empty($value);
     }
 
     /**
