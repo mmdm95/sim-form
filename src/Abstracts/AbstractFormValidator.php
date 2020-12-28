@@ -217,6 +217,15 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
     /**
      * {@inheritdoc}
      */
+    public function setStatus(bool $status)
+    {
+        $this->_set_status($status);
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getStatus(): bool
     {
         return (bool)$this->status;
@@ -815,7 +824,7 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
      *
      * @param bool $status
      */
-    protected function _set_status($status)
+    protected function _set_status(bool $status)
     {
         $this->status = $this->status && $status;
     }

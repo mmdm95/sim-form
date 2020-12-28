@@ -161,7 +161,8 @@ interface IFormValidator extends IFormError
      * @param callable $callback
      * @param bool $strict
      * @return static
-     */public function isIn(array $list, ?string $message = null, callable $callback = null, bool $strict = true);
+     */
+    public function isIn(array $list, ?string $message = null, callable $callback = null, bool $strict = true);
 
     /**
      * Check if a value is integer
@@ -406,6 +407,14 @@ interface IFormValidator extends IFormError
      * @return string
      */
     public function getFormName(): string;
+
+    /**
+     * Set validation status
+     *
+     * @param bool $status
+     * @return static
+     */
+    public function setStatus(bool $status);
 
     /**
      * Returns validation status of all validations
