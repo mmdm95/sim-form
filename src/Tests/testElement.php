@@ -1,9 +1,13 @@
 <?php
 
 use Sim\Form\FormElements\Button;
+use Sim\Form\FormElements\Checkbox;
 use Sim\Form\FormElements\Form;
 use Sim\Form\FormElements\Input;
+use Sim\Form\FormElements\OptionGroup;
+use Sim\Form\FormElements\Select;
 use Sim\Form\FormElements\SimpleText;
+use Sim\Form\FormElements\Textarea;
 use Sim\Form\FormElements\Wrapper;
 use Sim\Form\FormValidator;
 use Sim\Form\FormValue;
@@ -74,20 +78,77 @@ $wrapper6->add($rePassword);
 $submit_btn = new Button('submit', 'submit');
 $submit_btn->add(new SimpleText('<em>Submit</em>'));
 
-$form->add($wrapper)
+// create a select box
+$select_box = new Select('select-box[]');
+$select_box
+    ->setAttribute('multiple', 'multiple')
+    ->addOption(
+        new OptionGroup(
+            'Group1',
+            [
+                ['1' => 'A'],
+                ['2' => 'B'],
+                ['3' => 'C'],
+                ['4' => 'D'],
+            ])
+    )
+    ->addOption(
+        new OptionGroup(
+            'Group2',
+            [
+                'Item 1',
+                'Item 2',
+                'Item 3',
+                'Item 4',
+            ]
+        )
+    );
+
+// another simple wrapper
+$wrapper7 = new Wrapper();
+$wrapper7->add($select_box);
+
+// a simple checkbox
+$chk = new Checkbox('dummy');
+$chk
+    ->setAttribute('id', 'dummyChk')
+    ->label()
+    ->setAttribute('for', 'dummyChk')
+    ->add(new SimpleText('A dummy checkbox'));
+
+// another simple wrapper
+$wrapper8 = new Wrapper();
+$wrapper8->add($chk);
+
+// a simple textarea
+$textarea = new Textarea('txt-area');
+
+// another simple wrapper
+$wrapper9 = new Wrapper();
+$wrapper9->add($textarea)->setAttribute('style', 'margin-bottom: 10px;');
+
+$form
+    ->add($wrapper)
     ->add($wrapper2)
     ->add($wrapper3)
     ->add($wrapper4)
     ->add($wrapper5)
     ->add($wrapper6)
+    ->add($wrapper7)
+    ->add($wrapper8)
+    ->add($wrapper9)
     ->add($submit_btn);
 
 // add some validation rules to inputs
 $form->validateClosure(function (FormValidator $validator) use ($form_name) {
     // set optional fields
-    $validator->setOptionalFields([
-        'first_name'
-    ]);
+    $validator
+        ->setDefaultValue([
+            'dummy' => '',
+        ])
+        ->setOptionalFields([
+            'first_name'
+        ]);
 
     $validator->setFormName($form_name)->setFields([
         'first_name', 'last_name'
@@ -103,16 +164,17 @@ $form->validateClosure(function (FormValidator $validator) use ($form_name) {
     $validator->setFieldsAlias([
         'first_name' => 'First name',
         'last_name' => 'Last name',
+        'mobile.*.user' => 'mobile',
     ]);
 
 //    $validator->stopValidationAfterFirstErrorOnEachFieldGroup(true);
     $validator->setFields(['name' => 'first_name', 'last_name'])->greaterThanEqualLength(3);
     $validator->setFields(['first_name'])->regex('/[0-9]/');
 //    $validator->stopValidationAfterFirstError(true);
-    $validator->setFields(['mobile' => 'mobile.*.user'])->custom(function (FormValue $value) {
+    $validator->setFields('mobile.*.user')->custom(function (FormValue $value) {
         $mobileValidator = new \Sim\Form\Validations\PersianMobileValidation();
         return $mobileValidator->validate($value->getValue());
-    }, 'Mobile is not valid')->equalLength(11);
+    }, '{alias} is not valid')->equalLength(11);
     $validator->match(['password' => 'password'], ['password repeat' => 're_password']);
 });
 

@@ -115,22 +115,24 @@ class Form extends AbstractFieldComposite
      * Validate form fields with passed closure
      *
      * @see Form::validateClosure()
+     * @param bool $reassign_values
      * @return bool
      * @throws FormException
      */
-    public function validate(): bool
+    public function validate(bool $reassign_values = false): bool
     {
-        return $this->validateWithValues($_POST + $_FILES);
+        return $this->validateWithValues($_POST + $_FILES, $reassign_values);
     }
 
     /**
      * Validate form fields with passed closure and passed values
      *
      * @param array $values
+     * @param bool $reassign_values
      * @return bool
      * @throws FormException
      */
-    public function validateWithValues(array $values): bool
+    public function validateWithValues(array $values, bool $reassign_values = false): bool
     {
         if (is_null($this->validate_closure)) {
             throw new FormException('Validation closure needed for validation');
@@ -138,6 +140,8 @@ class Form extends AbstractFieldComposite
 
         if (is_null($this->form_validator) || !($this->form_validator instanceof FormValidator)) {
             $this->form_validator = new FormValidator($values);
+        } elseif ($reassign_values) {
+            $this->form_validator->setAllValues($values);
         }
         call_user_func_array($this->validate_closure, [&$this->form_validator]);
 
@@ -205,7 +209,7 @@ class Form extends AbstractFieldComposite
                         }
 
                         // if we have at least one message
-                        if(count($errors) != $simpleCounter) {
+                        if (count($errors) != $simpleCounter) {
                             if (!is_null($component->getParent())) {
                                 $component->getParent()->add($component->errorElement());
                             }
@@ -216,7 +220,10 @@ class Form extends AbstractFieldComposite
                 if (!$this->form_validator->getStatus()) {
                     $params = $this->form_validator->getFieldValue(ValidatorUtil::normalizeFieldKey($name));
                     $param = $params;
-                    if (is_array($params)) {
+                    if (
+                        is_array($params) &&
+                        (!($component instanceof Select) && !($component instanceof OptionGroup) && !($component instanceof Option))
+                    ) {
                         if (!isset($this->name_counter[$name])) {
                             $this->name_counter[$name] = 0;
                         } elseif ($this->name_counter[$name] < count($params)) {
@@ -226,7 +233,7 @@ class Form extends AbstractFieldComposite
                         $param = $params[$this->name_counter[$name]];
                     }
 
-                    $component->setValue(strval($param));
+                    $component->setValue($param);
                 }
             }
         }

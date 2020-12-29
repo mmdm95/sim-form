@@ -2,6 +2,7 @@
 
 namespace Sim\Form\Abstracts;
 
+use Sim\Form\FormElements\Textarea;
 use Sim\Form\Interfaces\IFormElement;
 
 abstract class AbstractFieldComposite extends AbstractFormElement

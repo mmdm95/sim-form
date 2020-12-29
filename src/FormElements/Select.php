@@ -2,15 +2,10 @@
 
 namespace Sim\Form\FormElements;
 
-use Sim\Form\Abstracts\AbstractFieldComposite;
+use Sim\Form\Abstracts\AbstractSelectElement;
 
-class Select extends AbstractFieldComposite
+class Select extends AbstractSelectElement
 {
-    /**
-     * @var array $options
-     */
-    protected $options = [];
-
     /**
      * Select constructor.
      * @param string|null $name
@@ -25,56 +20,23 @@ class Select extends AbstractFieldComposite
     /**
      * {@inheritdoc}
      */
-    public function setValue(?string $value = '')
+    public function setValue($value = '')
     {
-        if (!empty($this->getName())) {
-            $values = $_POST[$this->getName()] ?? null;
-            foreach ($this->options as $key => $option) {
-                if ($option instanceof Option) {
-                    $value = $option->getAttribute('value');
-
-                    /**
-                     * @var Option $option
-                     */
-                    if (!empty($value) && in_array($value, $values)) {
-                        $option->setAttribute('checked', 'checked');
-                    }
-                } elseif (is_string($key) && is_array($option)) {
-                    /**
-                     * @var array $option
-                     * @var Option $opt
-                     */
-                    foreach ($option as $opt) {
-                        if ($opt instanceof Option) {
-                            $value = $opt->getAttribute('value');
-                            if (!empty($value) && in_array($value, $values)) {
-                                $opt->setAttribute('checked', 'checked');
-                            }
-                        }
+        foreach ($this->options as $key => $option) {
+            if ($option instanceof OptionGroup || $option instanceof Option) {
+                $option->setValue($value);
+            } elseif (is_string($key) && is_array($option)) {
+                /**
+                 * @var array $option
+                 * @var Option $opt
+                 */
+                foreach ($option as $opt) {
+                    if ($opt instanceof Option) {
+                        $opt->setValue($value);
                     }
                 }
             }
         }
-        return $this;
-    }
-
-    /**
-     * @param string $value
-     * @return static
-     */
-    public function addOption(string $value)
-    {
-        $this->createOption($value);
-        return $this;
-    }
-
-    /**
-     * @param array $values
-     * @return static
-     */
-    public function addOptions(array $values)
-    {
-        $this->createOptions($values);
         return $this;
     }
 
@@ -85,7 +47,9 @@ class Select extends AbstractFieldComposite
     {
         $output = parent::render();
         foreach ($this->options as $key => $option) {
-            if ($option instanceof Option) {
+            if ($option instanceof OptionGroup) {
+                $output .= $option->render();
+            } elseif ($option instanceof Option) {
                 /**
                  * @var Option $option
                  */
@@ -106,31 +70,5 @@ class Select extends AbstractFieldComposite
             }
         }
         return "<{$this->getTagName()} {$this->attributesToString()}>\n$output</{$this->getTagName()}>\n";
-    }
-
-    /**
-     * @param array $values
-     */
-    protected function createOptions(array $values)
-    {
-        foreach ($values as $k => $value) {
-            $this->createOption($value, is_string($k) ? $k : null);
-        }
-    }
-
-    /**
-     * @param string|null $key
-     * @param string $value
-     */
-    protected function createOption(string $value, ?string $key = null)
-    {
-        if (!is_null($key)) {
-            if (!isset($this->options[$key])) {
-                $this->options[$key] = [];
-            }
-            $this->options[$key][] = new Option($value);
-        } else {
-            $this->options[] = new Option($value);
-        }
     }
 }

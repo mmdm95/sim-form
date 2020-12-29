@@ -749,11 +749,16 @@ class FormValidator extends AbstractFormValidator
     {
         $allSndNames = is_array($sndName) ? $sndName : (is_string($sndName) ? [$sndName] : []);
         //-----
-        if (is_array($fstName) && !empty($fstName)) {
-            $firstAlias = array_keys($fstName)[0];
-            $fstName = array_shift($fstName);
-            if (is_numeric($firstAlias)) $firstAlias = $fstName;
-            $first = $this->getFieldValue($fstName, null);
+        if (is_array($fstName)) {
+            if (!empty($fstName)) {
+                $firstAlias = array_keys($fstName)[0];
+                $fstName = array_shift($fstName);
+                if (is_numeric($firstAlias)) $firstAlias = $fstName;
+                $first = $this->getFieldValue($fstName, null);
+            } else {
+                $firstAlias = '';
+                $first = null;
+            }
         } else {
             $first = !is_null($fstName) ? $this->getFieldValue($fstName, null) : null;
             $firstAlias = $fstName;
@@ -892,7 +897,7 @@ class FormValidator extends AbstractFormValidator
     protected function _execute($name, $message, $method_name, $callback, callable $userCallback = null, array $extra_placeholders = []): bool
     {
         if ($this->stop_execution_at_first_error) {
-            if (!$this->getStatus()) return true;
+            if (!$this->getStatus()) return false;
         }
 
         $res = false;

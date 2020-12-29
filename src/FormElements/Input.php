@@ -31,9 +31,9 @@ class Input extends AbstractFormElement
      * Set element's type
      *
      * @param string $type
-     * @return Input
+     * @return static
      */
-    public function setType($type): Input
+    public function setType($type)
     {
         if (!is_null($type)) {
             $this->attributes['type'] = $type;
@@ -55,9 +55,9 @@ class Input extends AbstractFormElement
 
     /**
      * @param bool $answer
-     * @return Input
+     * @return static
      */
-    public function inputIsCsrf(bool $answer): Input
+    public function inputIsCsrf(bool $answer)
     {
         $this->is_csrf_token = $answer;
         return $this;
@@ -65,9 +65,9 @@ class Input extends AbstractFormElement
 
     /**
      * @param bool $answer
-     * @return Input
+     * @return static
      */
-    public function inputIsCaptcha(bool $answer): Input
+    public function inputIsCaptcha(bool $answer)
     {
         $this->is_captcha = $answer;
         return $this;

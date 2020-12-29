@@ -40,10 +40,10 @@ interface IFormElement extends IRenderer
     public function getTagName(): string;
 
     /**
-     * @param string $value
+     * @param array|string $value
      * @return static
      */
-    public function setValue(string $value = '');
+    public function setValue($value = '');
 
     /**
      * @param AbstractFieldComposite|null $parent

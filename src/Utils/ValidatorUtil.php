@@ -126,4 +126,9 @@ class ValidatorUtil
         }
         return $result;
     }
+
+    public static function isChecked($value): bool
+    {
+        return in_array($value, ['yes', 'on', 1, '1', true]);
+    }
 }

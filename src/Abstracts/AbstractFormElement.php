@@ -5,6 +5,7 @@ namespace Sim\Form\Abstracts;
 use Sim\Form\ExpandableElement;
 use Sim\Form\FormElements\Wrapper;
 use Sim\Form\Interfaces\IFormElement;
+use Sim\Form\Utils\ValidatorUtil;
 
 abstract class AbstractFormElement implements IFormElement
 {
@@ -113,14 +114,29 @@ abstract class AbstractFormElement implements IFormElement
     /**
      * {@inheritdoc}
      */
-    public function setValue(?string $value = '')
+    public function setValue($value = '')
     {
-        $name = $this->getAttribute('name');
         if (is_null($value)) $value = '';
-        if (!empty($name)) {
-            $type = $this->getAttribute('type');
-            if (!empty($type) && $type != 'password' && !$this->is_csrf_token && !$this->is_captcha) {
+        $type = $this->getAttribute('type');
+        $val = $this->getAttribute('value');
+
+//        var_dump($type, $value, $val);
+//        echo '----------' . PHP_EOL;
+
+        if ($this->getTagName() === 'option') {
+            if (!empty($value) && ((is_scalar($value) && $value == $val) || is_array($value) && in_array($val, $value))) {
+                $this->setAttribute('selected', 'selected');
+            }
+        } elseif (!empty($type) && $type != 'password' && !$this->is_csrf_token && !$this->is_captcha) {
+            if (!empty($value)) {
                 $this->setAttribute('value', $value);
+            }
+            if (
+                ($type === 'checkbox' || $type === 'radio') &&
+                !empty($value) &&
+                ($value == $val || ValidatorUtil::isChecked($value))
+            ) {
+                $this->setAttribute('checked', 'checked');
             }
         }
         return $this;
@@ -219,17 +235,9 @@ abstract class AbstractFormElement implements IFormElement
         $attributes = $this->getAttributes();
         $newAttr = '';
 
-//        if (is_array($attributes)) {
-//            unset($attributes['type']);
         foreach ($attributes as $attr => $value) {
             $newAttr .= "{$attr}=\"{$value}\" ";
         }
-//        }
-//        else if (is_string($attributes)) {
-//            // Remove any kind of type in attribute string
-//            $newAttr .= '#';
-//            $newAttr = preg_replace('/([^a-z0-9-_]\S*type[^a-z0-9-_]\s*)=*\s*[\"*\'*](.*?)[\"*\'*]\S*/i', '', $newAttr);
-//        }
         $newAttr = trim($newAttr);
 
         return $newAttr;
@@ -246,15 +254,7 @@ abstract class AbstractFormElement implements IFormElement
         if (!is_string($attributeName) || empty($attributeName)) return '';
 
         $attributes = $this->getAttributes();
-//        $value = '';
-//        if (is_array($attributes)) {
         $value = $attributes[$attributeName] ?? '';
-//        }
-//        else if (is_string($attributes)) {
-//            // find name value in attribute string
-//            preg_match('/[^a-z0-9-_]\S*' . preg_quote($attributeName, '/') . '[^a-z0-9-_]\s*=*[\"\'](.*?)[\"\']/i', $attributes, $matches);
-//            $value = $matches[1] ?? '';
-//        }
         $value = trim($value);
 
         return $value;

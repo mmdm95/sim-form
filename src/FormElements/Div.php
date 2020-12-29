@@ -4,14 +4,14 @@ namespace Sim\Form\FormElements;
 
 use Sim\Form\Abstracts\AbstractFieldComposite;
 
-class Fieldset extends AbstractFieldComposite
+class Div extends AbstractFieldComposite
 {
     /**
-     * Fieldset constructor.
+     * Div constructor.
      */
     public function __construct()
     {
-        parent::__construct('fieldset');
+        parent::__construct('div');
     }
 
     /**
