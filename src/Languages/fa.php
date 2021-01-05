@@ -25,7 +25,7 @@ return [
     'greaterThanEqual' => '{alias} باید مساوی یا بزرگتر از {min} باشد.',
     'greaterThanLength' => 'تعداد حروف {alias} باید از {min} بیشتر باشد.',
     'greaterThan' => '{alias} باید از {min} بزرگتر باشد.',
-    'hexColor' => 'کد هگز رنگ نامعتیر است.',
+    'hexColor' => 'کد هگز {alias} نامعتبر است.',
     'isIn' => '{alias} در {list} وجود ندارد.',
     'isInteger' => '{alias} باید از نوع عددی باشد.',
     'ipv4' => '{alias} یک ipv4 نامعتبر است.',
