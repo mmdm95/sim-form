@@ -195,6 +195,30 @@ class FormValidator extends AbstractFormValidator
     }
 
     /**
+     * Return all fields aliases
+     *
+     * @return array
+     */
+    public function getFieldsAlias(): array
+    {
+        return $this->fields_alias;
+    }
+
+    /**
+     * Get specific field's alias if exists(include empty string) or return prefer value
+     *
+     * @param string $key
+     * @param string $prefer
+     * @return string
+     */
+    public function getFieldAlias(string $key, string $prefer = ''): string
+    {
+        return isset($this->fields_alias[$key]) && is_scalar($this->fields_alias[$key])
+            ? strval($this->fields_alias[$key])
+            : $prefer;
+    }
+
+    /**
      * @param array $fields
      * @return static
      */
