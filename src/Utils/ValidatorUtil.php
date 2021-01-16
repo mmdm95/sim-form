@@ -19,6 +19,47 @@ class ValidatorUtil
     }
 
     /**
+     * Set value to array
+     *
+     * @param $data
+     * @param array $names
+     * @param $value
+     * @return mixed|null
+     */
+    public static function setParameters($data, array $names, $value)
+    {
+        // if data isn't an array or object
+        if (is_scalar($data)) {
+            return null;
+        }
+
+        // if there is no $names parameter, return
+        if (!count($names)) {
+            return null;
+        }
+
+        // get first name to fetch
+        $first = array_shift($names);
+
+        if ('*' == $first) {
+            foreach ($data as $k => &$v) {
+                $res = self::setParameters($v, $names, $value);
+                if (!is_null($res)) {
+                    $v = $res;
+                }
+            }
+            return $data;
+        } elseif (is_null($first) || !isset($data[$first])) {
+            return null;
+        } elseif (count($names) == 0) {
+            $data[$first] = $value;
+            return $data;
+        } else {
+            return self::setParameters($data[$first], $names, $value);
+        }
+    }
+
+    /**
      * Returns array of string values (empty or filled values)
      *
      * @param $data

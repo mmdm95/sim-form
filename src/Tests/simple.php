@@ -13,9 +13,11 @@ if ($_POST && count($_POST)) {
             'multi-select' => 'Dummy multi select',
             'name' => 'Name',
             'family' => 'Family',
+            'mobile' => 'Mobile number',
         ])->setDefaultValue([
             'chk' => 'off',
-        ]);
+        ])
+        ->toEnglishValue(true);
 
     // multi select
     $form_validator
@@ -29,6 +31,10 @@ if ($_POST && count($_POST)) {
     $form_validator
         ->setFields('family')
         ->alpha();
+    // mobile
+    $form_validator
+        ->setFields('mobile')
+        ->regex('/^(098|\+98|0)?9\d{9}$/');
 
     // to reset form values and not set them again
     if ($form_validator->getStatus()) {
@@ -78,6 +84,11 @@ if ($_POST && count($_POST)) {
         <label for="family">Family:</label>
         <input id="family" type="text" name="family"
                value="<?= $form_validator->setInput('family'); ?>">
+    </div>
+    <div style="margin-bottom: 15px;">
+        <label for="mobile">Mobile number:</label>
+        <input id="mobile" type="text" name="mobile"
+               value="<?= $form_validator->setInput('mobile'); ?>">
     </div>
 
     <button type="submit">

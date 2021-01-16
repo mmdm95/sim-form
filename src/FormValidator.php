@@ -4,40 +4,61 @@ namespace Sim\Form;
 
 use Sim\Form\Abstracts\AbstractFormValidator;
 use Sim\Form\Exceptions\FormException;
+use Sim\Form\Utils\LocalUtil;
 use Sim\Form\Utils\ValidatorUtil;
 use Sim\Form\Validations\PasswordValidation;
 
 class FormValidator extends AbstractFormValidator
 {
     /**
-     * @var array $all_fields_values
+     * @var array
      */
     protected $all_fields_values = [];
 
     /**
-     * @var array $fields_values_bag
+     * @var array
      */
     protected $fields_values_bag = [];
 
     /**
-     * @var array $fields_alias
+     * @var array
      */
     protected $fields_alias = [];
 
     /**
-     * @var array $optional_fields
+     * @var array
      */
     protected $optional_fields = [];
 
     /**
-     * @var bool $stop_execution_at_first_error
+     * @var bool
      */
     protected $stop_execution_at_first_error = false;
 
     /**
-     * @var bool $stop_execution_at_first_error_each_group
+     * @var bool
      */
     protected $stop_execution_at_first_error_each_group = false;
+
+    /**
+     * @var bool
+     */
+    protected $to_persian = false;
+
+    /**
+     * @var bool
+     */
+    protected $to_arabic = false;
+
+    /**
+     * @var bool
+     */
+    protected $to_english = false;
+
+    /**
+     * @var bool
+     */
+    protected $replace_value_to_local = false;
 
     /**
      * FormValidator constructor.
@@ -249,6 +270,42 @@ class FormValidator extends AbstractFormValidator
     public function stopValidationAfterFirstErrorOnEachFieldGroup(bool $answer)
     {
         $this->stop_execution_at_first_error_each_group = $answer;
+        return $this;
+    }
+
+    /**
+     * @param bool $answer
+     * @param bool $replace
+     * @return static
+     */
+    public function toPersianValue(bool $answer, bool $replace = false)
+    {
+        $this->to_persian = $answer;
+        $this->replace_value_to_local = $replace;
+        return $this;
+    }
+
+    /**
+     * @param bool $answer
+     * @param bool $replace
+     * @return static
+     */
+    public function toArabicValue(bool $answer, bool $replace = false)
+    {
+        $this->to_arabic = $answer;
+        $this->replace_value_to_local = $replace;
+        return $this;
+    }
+
+    /**
+     * @param bool $answer
+     * @param bool $replace
+     * @return static
+     */
+    public function toEnglishValue(bool $answer, bool $replace = false)
+    {
+        $this->to_english = $answer;
+        $this->replace_value_to_local = $replace;
         return $this;
     }
 
@@ -977,9 +1034,29 @@ class FormValidator extends AbstractFormValidator
             if (!is_array($values)) $values = [$values];
 
             foreach ($values as $value) {
+                $v = $value;
+
+                if ($this->to_arabic) {
+                    $v = LocalUtil::toArabic($v);
+                }
+                if ($this->to_persian) {
+                    $v = LocalUtil::toPersian($v);
+                }
+                if ($this->to_english) {
+                    $v = LocalUtil::toEnglish($v);
+                }
+                if ($this->replace_value_to_local) {
+                    $n = ValidatorUtil::setParameters($this->all_fields_values, explode('.', $name), $v);
+                    if(!empty($n)) {
+                        $this->all_fields_values = $n;
+                        $this->fields_values_bag = $n;
+                    }
+                }
+
                 if (null != $userCallback && is_callable($userCallback)) {
+
                     $formValue = new FormValue($this->all_fields_values);
-                    $formValue->setValue($value)
+                    $formValue->setValue($v)
                         ->setName($name)
                         ->setAlias($alias);
 
@@ -987,14 +1064,15 @@ class FormValidator extends AbstractFormValidator
 
                     // set replaced fields to current fields
                     $this->all_fields_values = $formValue->getReplacedValues();
+                    $this->fields_values_bag = $this->all_fields_values;
                 }
 
-                if (in_array($name, $this->optional_fields) && $this->_is_empty($value)) {
+                if (in_array($name, $this->optional_fields) && $this->_is_empty($v)) {
                     $res = true;
                     continue;
                 }
 
-                $res = call_user_func_array($callback, [$value, $name, $alias]);
+                $res = call_user_func_array($callback, [$v, $name, $alias]);
                 $errorValue = $value;
                 if (!$res) break;
             }
