@@ -213,9 +213,13 @@ class FormValidator extends AbstractFormValidator
      */
     public function getFieldAlias(string $key, string $prefer = ''): string
     {
-        return isset($this->fields_alias[$key]) && is_scalar($this->fields_alias[$key])
-            ? strval($this->fields_alias[$key])
-            : $prefer;
+        try {
+            return isset($this->fields_alias[$key])
+                ? strval($this->fields_alias[$key])
+                : $prefer;
+        } catch (\Exception $e) {
+            return $prefer;
+        }
     }
 
     /**
