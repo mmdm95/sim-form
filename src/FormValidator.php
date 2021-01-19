@@ -61,6 +61,41 @@ class FormValidator extends AbstractFormValidator
     protected $replace_value_to_local = false;
 
     /**
+     * @var array
+     */
+    protected $to_persian_fields = [];
+
+    /**
+     * @var array
+     */
+    protected $to_arabic_fields = [];
+
+    /**
+     * @var array
+     */
+    protected $to_english_fields = [];
+
+    /**
+     * @var bool
+     */
+    protected $replace_fields_value_to_local = false;
+
+    /**
+     * @var array
+     */
+    protected $to_persian_except_fields = [];
+
+    /**
+     * @var array
+     */
+    protected $to_arabic_except_fields = [];
+
+    /**
+     * @var array
+     */
+    protected $to_english_except_fields = [];
+
+    /**
      * FormValidator constructor.
      * @param array $on
      */
@@ -306,6 +341,72 @@ class FormValidator extends AbstractFormValidator
     {
         $this->to_english = $answer;
         $this->replace_value_to_local = $replace;
+        return $this;
+    }
+
+    /**
+     * @param array $fields
+     * @param bool $replace
+     * @return static
+     */
+    public function toPersianValueFields(array $fields, bool $replace = false)
+    {
+        $this->to_persian_fields = $fields;
+        $this->replace_fields_value_to_local = $replace;
+        return $this;
+    }
+
+    /**
+     * @param array $fields
+     * @param bool $replace
+     * @return static
+     */
+    public function toArabicValueFields(array $fields, bool $replace = false)
+    {
+        $this->to_arabic_fields = $fields;
+        $this->replace_fields_value_to_local = $replace;
+        return $this;
+    }
+
+    /**
+     * @param array $fields
+     * @param bool $replace
+     * @return static
+     */
+    public function toEnglishValueFields(array $fields, bool $replace = false)
+    {
+        $this->to_english_fields = $fields;
+        $this->replace_fields_value_to_local = $replace;
+        return $this;
+    }
+
+    /**
+     * @param array $fields
+     * @return static
+     */
+    public function toPersianValueExceptFields(array $fields)
+    {
+        $this->to_persian_except_fields = $fields;
+        return $this;
+    }
+
+    /**
+     * @param array $fields
+     * @return static
+     */
+    public function toArabicValueExceptFields(array $fields)
+    {
+        $this->to_arabic_except_fields = $fields;
+        return $this;
+    }
+
+    /**
+     * @param array $fields
+     * @return static
+     */
+    public function toEnglishValueExceptFields(array $fields)
+    {
+        $this->to_english_except_fields = $fields;
         return $this;
     }
 
@@ -1036,18 +1137,32 @@ class FormValidator extends AbstractFormValidator
             foreach ($values as $value) {
                 $v = $value;
 
-                if ($this->to_arabic) {
+                if (
+                    ($this->to_arabic || in_array($name, $this->to_arabic_fields)) &&
+                    !in_array($name, $this->to_arabic_except_fields)
+                ) {
                     $v = LocalUtil::toArabic($v);
                 }
-                if ($this->to_persian) {
+                if (
+                    ($this->to_persian || in_array($name, $this->to_persian_fields)) &&
+                    !in_array($name, $this->to_persian_except_fields)
+                ) {
                     $v = LocalUtil::toPersian($v);
                 }
-                if ($this->to_english) {
+                if (
+                    ($this->to_english || in_array($name, $this->to_english_fields)) &&
+                    !in_array($name, $this->to_english_except_fields)
+                ) {
                     $v = LocalUtil::toEnglish($v);
                 }
-                if ($this->replace_value_to_local) {
+                if (
+                    ($this->replace_value_to_local || $this->replace_fields_value_to_local) &&
+                    !in_array($name, $this->to_arabic_except_fields) &&
+                    !in_array($name, $this->to_persian_except_fields) &&
+                    !in_array($name, $this->to_english_except_fields)
+                ) {
                     $n = ValidatorUtil::setParameters($this->all_fields_values, explode('.', $name), $v);
-                    if(!empty($n)) {
+                    if (!empty($n)) {
                         $this->all_fields_values = $n;
                         $this->fields_values_bag = $n;
                     }

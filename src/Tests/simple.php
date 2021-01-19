@@ -14,10 +14,14 @@ if ($_POST && count($_POST)) {
             'name' => 'Name',
             'family' => 'Family',
             'mobile' => 'Mobile number',
+            'mobile2' => 'Second mobile number',
         ])->setDefaultValue([
             'chk' => 'off',
         ])
-        ->toEnglishValue(true);
+        ->toEnglishValue(true)
+        ->toEnglishValueExceptFields([
+            'mobile',
+        ]);
 
     // multi select
     $form_validator
@@ -33,7 +37,10 @@ if ($_POST && count($_POST)) {
         ->alpha();
     // mobile
     $form_validator
-        ->setFields('mobile')
+        ->setFields([
+            'mobile',
+            'mobile2'
+        ])
         ->regex('/^(098|\+98|0)?9\d{9}$/');
 
     // to reset form values and not set them again
@@ -89,6 +96,11 @@ if ($_POST && count($_POST)) {
         <label for="mobile">Mobile number:</label>
         <input id="mobile" type="text" name="mobile"
                value="<?= $form_validator->setInput('mobile'); ?>">
+    </div>
+    <div style="margin-bottom: 15px;">
+        <label for="mobile2">Second mobile number:</label>
+        <input id="mobile2" type="text" name="mobile2"
+               value="<?= $form_validator->setInput('mobile2'); ?>">
     </div>
 
     <button type="submit">
