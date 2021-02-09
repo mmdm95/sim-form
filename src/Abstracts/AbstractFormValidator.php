@@ -155,6 +155,10 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
     public function setLang(string $lang)
     {
         if (!empty($lang)) {
+            $ext = pathinfo($lang, \PATHINFO_EXTENSION);
+            if (!empty($ext)) {
+                $lang = str_replace($ext, '', $lang);
+            }
             $this->language_type = $lang;
         }
         return $this;
@@ -885,14 +889,17 @@ abstract class AbstractFormValidator extends AbstractFormErrorProvider implement
     protected function _load_language_settings()
     {
         $ext = pathinfo($this->language_type, \PATHINFO_EXTENSION);
+        $filename = $this->language_directory . $this->language_type;
         if (empty($ext)) {
-            $this->language_type .= '.php';
+            $filename .= '.php';
         }
 
-        $filename = $this->language_directory . $this->language_type;
+        $languageSettings = [];
         if (file_exists($filename)) {
-            $this->language_settings = include $filename . '';
+            $languageSettings = include $filename . '';
         }
+
+        $this->language_settings = array_merge($this->language_settings, $languageSettings);
     }
 
     /**
