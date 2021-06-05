@@ -1057,16 +1057,15 @@ class FormValidator extends AbstractFormValidator
     {
         $values = $this->getFieldValue($name, null, true);
         $value = (string)$value;
+        if (empty($_POST) || empty($value) || empty($values)) {
+            return (bool)$default ? $return : '';
+        }
         if (is_array($values)) {
-            if (!empty($value) && in_array($value, $values)) {
+            if (in_array($value, $values)) {
                 return $return;
             }
-            return '';
         }
-        if ((!empty($values) && !empty($value)) || !empty($_POST)) {
-            return $values == $value ? $return : '';
-        }
-        return (bool)$default ? $return : '';
+        return $values == $value ? $return : '';
     }
 
     /**
