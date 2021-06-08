@@ -19,8 +19,8 @@ class IsCheckedValidation extends AbstractValidation
             return false;
         }
 
-        $checkedArr = ['yes', 'on', 1, '1', true];
+        $checkedArr = ['yes', 'on', 1, '1', true, "true"];
         [$value] = $_;
-        return in_array($value, $checkedArr);
+        return in_array($value, $checkedArr, true);
     }
 }
